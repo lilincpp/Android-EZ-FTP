@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">EZFtp</string>
+    <string name="app_name">EZ-FTP</string>
+    <string name="help_title">How to use it?</string>
+    <string name="step1">1.As a server-side device, turn on the hotspot</string>
+    <string name="step2">2.As a server-side device, start the FTP service</string>
+    <string name="step3">3.As the client device, connect to the hotspot</string>
+    <string name="step4">4.As the client device， connect to the FTP service</string>
+
+    <string name="start_ftp_server">Run as an FTP server</string>
+    <string name="start_ftp_client">Run as an FTP client</string>
 </resources>
