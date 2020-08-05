@@ -11,4 +11,5 @@ public class FTPApplication extends Application {
         super.onCreate();
         Utils.init(this);
     }
+    //
 }
