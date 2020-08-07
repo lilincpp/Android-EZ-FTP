@@ -1,2 +1,3 @@
+include ':libezftp'
 rootProject.name='EZFtp'
 include ':app'
