@@ -5,29 +5,36 @@ import androidx.annotation.Nullable;
 
 import com.lilincpp.github.libezftp.callback.OnEZCallBack;
 
+import java.util.List;
+
 interface IEZFtpClient {
 
-    void connect(@NonNull String serverIp, @NonNull int port);
+    void connect(@NonNull String serverIp,
+                 @NonNull int port,
+                 @NonNull String userName,
+                 @NonNull String password);
 
-    void connect(@NonNull String serverIp, @NonNull int port, @NonNull OnEZCallBack<EZResult> callBack);
-
-    void login(String user, String password, OnEZCallBack<EZResult> callBack);
+    void connect(@NonNull String serverIp,
+                 @NonNull int port,
+                 @NonNull String userName,
+                 @NonNull String password,
+                 @Nullable OnEZCallBack<Void> callBack);
 
     void disconnect();
 
-    void disconnect(@Nullable OnEZCallBack<EZResult> callBack);
+    void disconnect(@Nullable OnEZCallBack<Void> callBack);
 
     boolean isConnected();
 
     ////////////////////////////////////////
 
-    void getCurDirList(@NonNull OnEZCallBack<EZFtpFile[]> callBack);
+    void getCurDirFileList(@Nullable OnEZCallBack<List<EZFtpFile>> callBack);
 
-    void getCurDirPath(@NonNull OnEZCallBack<String> callBack);
+    void getCurDirPath(@Nullable OnEZCallBack<String> callBack);
 
-    void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<EZResult> callBack);
+    void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<Void> callBack);
 
-    void backup(@Nullable OnEZCallBack<EZResult> callBack);
+    void backup(@Nullable OnEZCallBack<Void> callBack);
 
     void downloadFile(@NonNull String remoteName, @NonNull String localFilePath);
 

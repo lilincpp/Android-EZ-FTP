@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.lilincpp.github.libezftp.callback.OnEZCallBack;
 
+import java.util.List;
+
 /**
  * 供外界使用的API
  *
@@ -14,18 +16,17 @@ public final class EZFtpClient implements IEZFtpClient {
 
     private EZFtpClientIml ftpClientIml;
 
-
     @Override
-    public void connect(@NonNull String serverIp, @NonNull int port) {
+    public void connect(@NonNull String serverIp, @NonNull int port, @NonNull String userName, @NonNull String password) {
         if (ftpClientIml != null) {
-            ftpClientIml.connect(serverIp, port);
+            ftpClientIml.connect(serverIp, port, userName, password);
         }
     }
 
     @Override
-    public void connect(@NonNull String serverIp, @NonNull int port, @Nullable OnEZCallBack<EZResult> callBack) {
+    public void connect(@NonNull String serverIp, @NonNull int port, @NonNull String userName, @NonNull String password, @Nullable OnEZCallBack<Void> callBack) {
         if (ftpClientIml != null) {
-            ftpClientIml.connect(serverIp, port, callBack);
+            ftpClientIml.connect(serverIp, port, userName, password, callBack);
         }
     }
 
@@ -37,7 +38,7 @@ public final class EZFtpClient implements IEZFtpClient {
     }
 
     @Override
-    public void disconnect(@Nullable OnEZCallBack<EZResult> callBack) {
+    public void disconnect(@Nullable OnEZCallBack<Void> callBack) {
         if (ftpClientIml != null) {
             ftpClientIml.disconnect(callBack);
         }
@@ -52,28 +53,28 @@ public final class EZFtpClient implements IEZFtpClient {
     }
 
     @Override
-    public void getCurDirList(@NonNull OnEZCallBack<EZFtpFile[]> callBack) {
+    public void getCurDirFileList(@Nullable OnEZCallBack<List<EZFtpFile>> callBack) {
         if (ftpClientIml != null) {
-            ftpClientIml.getCurDirList(callBack);
+            ftpClientIml.getCurDirFileList(callBack);
         }
     }
 
     @Override
-    public void getCurDirPath(@NonNull OnEZCallBack<String> callBack) {
+    public void getCurDirPath(@Nullable OnEZCallBack<String> callBack) {
         if (ftpClientIml != null) {
             ftpClientIml.getCurDirPath(callBack);
         }
     }
 
     @Override
-    public void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<EZResult> callBack) {
+    public void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<Void> callBack) {
         if (ftpClientIml != null) {
             ftpClientIml.changeDirectory(path, callBack);
         }
     }
 
     @Override
-    public void backup(@Nullable OnEZCallBack<EZResult> callBack) {
+    public void backup(@Nullable OnEZCallBack<Void> callBack) {
         if (ftpClientIml != null) {
             ftpClientIml.backup(callBack);
         }

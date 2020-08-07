@@ -2,5 +2,7 @@ package com.lilincpp.github.libezftp.callback;
 
 public interface OnEZCallBack<E> {
 
-    void onResponse(E response);
+    void onSuccess(E response);
+
+    void onFail(int code, String msg);
 }

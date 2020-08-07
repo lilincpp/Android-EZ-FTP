@@ -9,28 +9,51 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.lilincpp.github.libezftp.callback.OnEZCallBack;
+import com.lilincpp.github.libezftp.exceptions.EZNoInitException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import it.sauronsoftware.ftp4j.FTPAbortedException;
 import it.sauronsoftware.ftp4j.FTPClient;
+import it.sauronsoftware.ftp4j.FTPDataTransferException;
 import it.sauronsoftware.ftp4j.FTPException;
+import it.sauronsoftware.ftp4j.FTPFile;
 import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
+import it.sauronsoftware.ftp4j.FTPListParseException;
 
+/**
+ * FTP客户端具体实现类
+ */
 class EZFtpClientIml implements IEZFtpClient {
 
     private FTPClient ftpClient;
     private HandlerThread taskThread = new HandlerThread("ftp-task");
-    private FTPTaskHandler handler;
+    private Handler taskHandler;
+    private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
     private final Object lock = new Object();
+    private boolean isInit = false;
+    private String curDirPath;
 
-    private static final class FTPTaskHandler extends Handler {
+    private static final class CallBackHolder {
+        Object callback;
+        Object response;
 
-        public FTPTaskHandler(@NonNull Looper looper) {
-            super(looper);
+        public CallBackHolder(Object callback, Object response) {
+            this.callback = callback;
+            this.response = response;
         }
+    }
 
-        @Override
-        public void handleMessage(@NonNull Message msg) {
+    EZFtpClientIml() {
+        init();
+    }
+
+    private void setCurDirPath(String path) {
+        synchronized (lock) {
+            this.curDirPath = path;
         }
     }
 
@@ -43,10 +66,11 @@ class EZFtpClientIml implements IEZFtpClient {
             final HandlerThread temp = taskThread;
             if (!temp.isAlive()) {
                 temp.start();
-                handler = new FTPTaskHandler(temp.getLooper());
+                taskHandler = new Handler(temp.getLooper());
             }
             //初始化FTP客户端
             ftpClient = new FTPClient();
+            isInit = true;
         }
     }
 
@@ -55,74 +79,231 @@ class EZFtpClientIml implements IEZFtpClient {
      */
     private void release() {
         synchronized (lock) {
-
             //检查FTP客户端是否仍然连接
             //如果仍然在连接的话，则先断开
             if (ftpClient != null && isConnected()) {
                 disconnect();
             }
-
             //释放工作线程
             final HandlerThread temp = taskThread;
             if (temp.isAlive()) {
                 temp.quit();
+            }
+            if (taskHandler != null) {
+                taskHandler.removeCallbacksAndMessages(null);
+            }
+        }
+    }
+
+    private void checkInit() {
+        if (!isInit) {
+            throw new EZNoInitException("EZFtpClient is not init");
+        }
+    }
+
+    private void callbackSuccess(final OnEZCallBack callBack, final Object response) {
+        synchronized (lock) {
+            if (callBack != null) {
+                mainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.onSuccess(response);
+                    }
+                });
+            }
+        }
+    }
+
+    private void callbackFail(final OnEZCallBack callBack, final int code, final String msg) {
+        synchronized (lock) {
+            if (callBack != null) {
+                mainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.onFail(code, msg);
+                    }
+                });
             }
         }
     }
 
 
     @Override
-    public void connect(@NonNull String serverIp, @NonNull int port) {
-
+    public void connect(@NonNull final String serverIp, @NonNull final int port, @NonNull final String userName, @NonNull final String password) {
+        connect(serverIp, port, userName, password, null);
     }
 
     @Override
-    public void connect(@NonNull String serverIp, @NonNull int port, @Nullable OnEZCallBack<EZResult> callBack) {
-
+    public void connect(@NonNull final String serverIp, @NonNull final int port, @NonNull final String userName, @NonNull final String password, @Nullable final OnEZCallBack<Void> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ftpClient.connect(serverIp, port);
+                    ftpClient.login(userName, password);
+                    getCurDirPath(null);
+                    callbackSuccess(callBack, null);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
     public void disconnect() {
-
+        disconnect(null);
     }
 
     @Override
-    public void disconnect(@Nullable OnEZCallBack<EZResult> callBack) {
-
+    public void disconnect(@Nullable final OnEZCallBack<Void> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ftpClient.disconnect(true);
+                    callbackSuccess(callBack, null);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
     public boolean isConnected() {
-        return false;
+        return ftpClient != null && ftpClient.isConnected();
     }
 
     @Override
-    public void getCurDirList(@NonNull OnEZCallBack<EZFtpFile[]> callBack) {
-
+    public void getCurDirFileList(@Nullable final OnEZCallBack<List<EZFtpFile>> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FTPFile[] ftpFiles = ftpClient.list();
+                    List<EZFtpFile> ezFtpFiles = new ArrayList<>();
+                    for (FTPFile ftpFile : ftpFiles) {
+                        ezFtpFiles.add(
+                                new EZFtpFile(
+                                        ftpFile.getName(),
+                                        curDirPath,
+                                        ftpFile.getType(),
+                                        ftpFile.getSize(),
+                                        ftpFile.getModifiedDate()
+                                ));
+                    }
+                    callbackSuccess(callBack, ezFtpFiles);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (FTPDataTransferException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (FTPAbortedException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (FTPListParseException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void getCurDirPath(@NonNull OnEZCallBack<String> callBack) {
-
+    public void getCurDirPath(@Nullable final OnEZCallBack<String> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final String path = ftpClient.currentDirectory();
+                    setCurDirPath(path);
+                    callbackSuccess(callBack, path);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<EZResult> callBack) {
-
+    public void changeDirectory(@NonNull final String path, @Nullable final OnEZCallBack<Void> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ftpClient.changeDirectory(path);
+                    getCurDirPath(null);
+                    callbackSuccess(callBack, null);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void backup(@Nullable OnEZCallBack<EZResult> callBack) {
-
+    public void backup(@Nullable final OnEZCallBack<Void> callBack) {
+        checkInit();
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ftpClient.changeDirectoryUp();
+                    getCurDirPath(null);
+                    callbackSuccess(callBack, null);
+                } catch (IOException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                } catch (IllegalStateException e) {
+                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
     public void downloadFile(@NonNull String remoteName, @NonNull String localFilePath) {
-
+        //TODO
     }
 
     @Override
     public void uploadFile(@NonNull String localFilePath, @NonNull String remotePath) {
-
+        //TODO
     }
 }
