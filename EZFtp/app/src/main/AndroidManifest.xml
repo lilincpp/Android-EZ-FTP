@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".FTPApplication"
+        android:name=".FtpApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,13 +30,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FTPMainActivity"
+            android:name=".FtpMainActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ftpclient.FTPClientActivity"
+            android:name=".ftpclient.FtpClientActivity"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ftpserver.FTPServerActivity"
+            android:name=".ftpserver.FtpServerActivity"
             android:launchMode="singleTop" />
     </application>
 

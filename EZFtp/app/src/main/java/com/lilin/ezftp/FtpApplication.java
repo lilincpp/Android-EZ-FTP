@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.blankj.utilcode.util.Utils;
 
-public class FTPApplication extends Application {
+public class FtpApplication extends Application {
 
     @Override
     public void onCreate() {

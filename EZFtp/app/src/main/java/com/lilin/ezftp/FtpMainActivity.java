@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.lilin.ezftp.databinding.ActivityFtpMainBinding;
 
-public class FTPMainActivity extends BaseActivity implements View.OnClickListener {
+public class FtpMainActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityFtpMainBinding binding;
 

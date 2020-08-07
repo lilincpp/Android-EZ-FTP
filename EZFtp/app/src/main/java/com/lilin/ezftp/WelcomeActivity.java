@@ -66,6 +66,6 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void toMainActivity() {
-        startActivity(new Intent(this, FTPMainActivity.class));
+        startActivity(new Intent(this, FtpMainActivity.class));
     }
 }
