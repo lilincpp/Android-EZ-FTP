@@ -29,6 +29,8 @@ import it.sauronsoftware.ftp4j.FTPListParseException;
  */
 class EZFtpClientIml implements IEZFtpClient {
 
+    private static final String HOME_DIR = "/";
+
     private FTPClient ftpClient;
     private HandlerThread taskThread = new HandlerThread("ftp-task");
     private Handler taskHandler;
@@ -313,5 +315,15 @@ class EZFtpClientIml implements IEZFtpClient {
     @Override
     public void uploadFile(@NonNull String localFilePath, @NonNull String remotePath) {
         //TODO
+    }
+
+    @Override
+    public boolean curDirIsHomeDir() {
+        return TextUtils.equals(curDirPath, HOME_DIR);
+    }
+
+    @Override
+    public void backToHomeDir(OnEZCallBack<String> callBack) {
+        changeDirectory(HOME_DIR, callBack);
     }
 }

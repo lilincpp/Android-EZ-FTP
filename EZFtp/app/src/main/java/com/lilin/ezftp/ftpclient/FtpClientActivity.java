@@ -18,6 +18,9 @@ import com.lilincpp.github.libezftp.callback.OnEZCallBack;
 
 import java.util.List;
 
+/**
+ * FTP客户端演示代码
+ */
 public class FtpClientActivity extends AppCompatActivity {
 
     private static final String TAG = "FtpClientActivity";
@@ -42,18 +45,51 @@ public class FtpClientActivity extends AppCompatActivity {
 
         binding.btnConnect.setOnClickListener(onClickListener);
         binding.btnDisconnect.setOnClickListener(onClickListener);
+        binding.btnBackup.setOnClickListener(onClickListener);
     }
 
-    private void updateCurDir(String path) {
+    private void updatePathView(String path) {
         curDirPath = path;
-        binding.tvCurDirPath.setText(curDirPath);
+        binding.tvCurDirPath.setText(path);
+        binding.btnBackup.setVisibility(ftpClient.curDirIsHomeDir() ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    private void updateCurDir() {
+        ftpClient.getCurDirPath(new OnEZCallBack<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Log.d(TAG, "getCurDirPath onSuccess: ");
+                updatePathView(response);
+            }
+
+            @Override
+            public void onFail(int code, String msg) {
+                Log.d(TAG, "getCurDirPath onFail: ");
+            }
+        });
+    }
+
+    private void updateFileList() {
+        if (ftpClient != null) {
+            ftpClient.getCurDirFileList(new OnEZCallBack<List<EZFtpFile>>() {
+                @Override
+                public void onSuccess(List<EZFtpFile> response) {
+                    ftpFilesAdapter.setFtpFiles(response);
+                }
+
+                @Override
+                public void onFail(int code, String msg) {
+
+                }
+            });
+        }
     }
 
     private void connectFtpServer() {
         ftpClient = new EZFtpClient();
         final String serverId = NetworkUtils.getServerAddressByWifi();
         ftpClient.connect(
-                serverId,
+                "10.60.226.64",
                 FtpConfig.DEFAULT_PORT,
                 FtpConfig.DEFAULT_USER,
                 FtpConfig.DEFAULT_PASSWORD,
@@ -62,31 +98,8 @@ public class FtpClientActivity extends AppCompatActivity {
                     public void onSuccess(Void response) {
                         Log.d(TAG, "connectFtpServer onSuccess: ");
 
-                        ftpClient.getCurDirPath(new OnEZCallBack<String>() {
-                            @Override
-                            public void onSuccess(String response) {
-                                Log.d(TAG, "getCurDirPath onSuccess: ");
-                                updateCurDir(response);
-                            }
-
-                            @Override
-                            public void onFail(int code, String msg) {
-                                Log.d(TAG, "getCurDirPath onFail: ");
-                            }
-                        });
-
-                        ftpClient.getCurDirFileList(new OnEZCallBack<List<EZFtpFile>>() {
-                            @Override
-                            public void onSuccess(List<EZFtpFile> response) {
-                                Log.d(TAG, "getCurDirFileList onSuccess: ");
-                                ftpFilesAdapter.setFtpFiles(response);
-                            }
-
-                            @Override
-                            public void onFail(int code, String msg) {
-                                Log.d(TAG, "getCurDirFileList onFail: ");
-                            }
-                        });
+                        updateCurDir();
+                        updateFileList();
                     }
 
                     @Override
@@ -123,6 +136,22 @@ public class FtpClientActivity extends AppCompatActivity {
                 case R.id.btn_disconnect:
                     disconnectFtpServer();
                     break;
+                case R.id.btn_backup:
+                    if (ftpClient != null) {
+                        ftpClient.backup(new OnEZCallBack<String>() {
+                            @Override
+                            public void onSuccess(String response) {
+                                updatePathView(response);
+                                updateFileList();
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+
+                            }
+                        });
+                    }
+                    break;
                 default:
                     break;
             }
@@ -138,7 +167,8 @@ public class FtpClientActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String response) {
                         Log.d(TAG, "onSuccess: response = " + response);
-                        updateCurDir(response);
+                        updatePathView(response);
+                        updateFileList();
                     }
 
                     @Override

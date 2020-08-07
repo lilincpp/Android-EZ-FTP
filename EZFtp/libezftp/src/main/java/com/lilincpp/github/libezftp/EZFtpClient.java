@@ -101,4 +101,16 @@ public final class EZFtpClient implements IEZFtpClient {
             ftpClientIml.uploadFile(localFilePath, remotePath);
         }
     }
+
+    @Override
+    public boolean curDirIsHomeDir() {
+        return ftpClientIml != null && ftpClientIml.curDirIsHomeDir();
+    }
+
+    @Override
+    public void backToHomeDir(OnEZCallBack<String> callBack) {
+        if (ftpClientIml != null) {
+            ftpClientIml.backToHomeDir(callBack);
+        }
+    }
 }

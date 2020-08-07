@@ -24,8 +24,6 @@ interface IEZFtpClient {
 
     void disconnect(@Nullable OnEZCallBack<Void> callBack);
 
-    boolean isConnected();
-
     ////////////////////////////////////////
 
     void getCurDirFileList(@Nullable OnEZCallBack<List<EZFtpFile>> callBack);
@@ -39,6 +37,14 @@ interface IEZFtpClient {
     void downloadFile(@NonNull String remoteName, @NonNull String localFilePath);
 
     void uploadFile(@NonNull String localFilePath, @NonNull String remotePath);
+
+    ////////////////////////////////////////
+
+    boolean isConnected();
+
+    boolean curDirIsHomeDir();
+
+    void backToHomeDir(OnEZCallBack<String> callBack);
 
     ////////////////////////////////////////
 }

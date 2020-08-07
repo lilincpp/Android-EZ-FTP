@@ -12,6 +12,8 @@
     <string name="connect_ftp_server">连接FTP服务器</string>
     <string name="disconnect_ftp_server">断开FTP服务器</string>
 
+    <string name="backup">返回上一级</string>
+
     <string name="file">文件</string>
     <string name="dir">文件夹</string>
     <string name="link">链接</string>

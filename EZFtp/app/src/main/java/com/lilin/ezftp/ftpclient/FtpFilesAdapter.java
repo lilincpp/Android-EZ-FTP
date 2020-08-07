@@ -1,6 +1,7 @@
 package com.lilin.ezftp.ftpclient;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import java.util.List;
  * @author lilin
  */
 public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHolder> {
+
+    private static final String TAG = "FtpFilesAdapter";
 
     private List<EZFtpFile> ftpFiles;
     private OnItemClickListener onItemClickListener;
@@ -60,7 +63,7 @@ public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final EZFtpFile ftpFile = ftpFiles.get(position);
-
+        Log.e(TAG, "onBindViewHolder: ftpFile = " + ftpFile.toString());
         final String typeFile = holder.itemView.getContext().getString(R.string.file);
         final String typeDir = holder.itemView.getContext().getString(R.string.dir);
         final String typeLink = holder.itemView.getContext().getString(R.string.link);
@@ -76,7 +79,7 @@ public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHo
 
         holder.binding.tvName.setText(ftpFile.getName());
         holder.binding.tvType.setText(fileType);
-        holder.binding.tvSize.setText(ConvertUtils.byte2FitMemorySize(ftpFile.getSize()));
+        holder.binding.tvSize.setText(ConvertUtils.byte2FitMemorySize(ftpFile.getSize(), 1));
         holder.binding.tvDate.setText(TimeUtils.date2String(ftpFile.getModifiedDate()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

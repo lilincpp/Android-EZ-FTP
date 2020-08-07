@@ -1,5 +1,6 @@
 package com.lilin.ezftp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -7,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.lilin.ezftp.databinding.ActivityFtpMainBinding;
+import com.lilin.ezftp.ftpclient.FtpClientActivity;
 
 public class FtpMainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -32,6 +34,8 @@ public class FtpMainActivity extends BaseActivity implements View.OnClickListene
                         getString(R.string.step4) +
                         "\n";
         binding.tvHelpInfo.setText(builder);
+        binding.btnAsClient.setOnClickListener(this);
+        binding.btnAsServer.setOnClickListener(this);
     }
 
     @Override
@@ -40,6 +44,7 @@ public class FtpMainActivity extends BaseActivity implements View.OnClickListene
             case R.id.btn_as_server:
                 break;
             case R.id.btn_as_client:
+                startActivity(new Intent(this, FtpClientActivity.class));
                 break;
         }
     }
