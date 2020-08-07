@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -99,6 +100,26 @@ class EZFtpClientIml implements IEZFtpClient {
         if (!isInit) {
             throw new EZNoInitException("EZFtpClient is not init");
         }
+    }
+
+    private String getBackUpPath() {
+        if (TextUtils.isEmpty(curDirPath)) {
+            return null;
+        }
+
+        //此时是根目录
+        if (curDirPath.length() == 1) {
+            return curDirPath;
+        }
+
+        //获取最后一个文件符斜杠的下标
+        final int lastIndex = curDirPath.lastIndexOf("/");
+        //substring不会包含最后一个字符，因此如果是[/lilin]
+        if (lastIndex == 0) {
+            return "/";
+        }
+        return curDirPath.substring(0, lastIndex);
+
     }
 
     private void callbackSuccess(final OnEZCallBack callBack, final Object response) {
@@ -252,15 +273,19 @@ class EZFtpClientIml implements IEZFtpClient {
     }
 
     @Override
-    public void changeDirectory(@NonNull final String path, @Nullable final OnEZCallBack<Void> callBack) {
+    public void changeDirectory(@NonNull final String path, @Nullable final OnEZCallBack<String> callBack) {
         checkInit();
         taskHandler.post(new Runnable() {
             @Override
             public void run() {
                 try {
-                    ftpClient.changeDirectory(path);
-                    getCurDirPath(null);
-                    callbackSuccess(callBack, null);
+                    if (TextUtils.isEmpty(path)) {
+                        callbackFail(callBack, EZResult.RESULT_FAIL, "path is empty!");
+                    } else {
+                        ftpClient.changeDirectory(path);
+                        setCurDirPath(path);
+                        callbackSuccess(callBack, path);
+                    }
                 } catch (IOException e) {
                     callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
@@ -275,26 +300,9 @@ class EZFtpClientIml implements IEZFtpClient {
     }
 
     @Override
-    public void backup(@Nullable final OnEZCallBack<Void> callBack) {
+    public void backup(@Nullable final OnEZCallBack<String> callBack) {
         checkInit();
-        taskHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ftpClient.changeDirectoryUp();
-                    getCurDirPath(null);
-                    callbackSuccess(callBack, null);
-                } catch (IOException e) {
-                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, "IOException");
-                } catch (FTPIllegalReplyException e) {
-                    callbackFail(callBack, EZResult.RESULT_FAIL, "Read server response fail!");
-                } catch (FTPException e) {
-                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
-                } catch (IllegalStateException e) {
-                    callbackFail(callBack, EZResult.RESULT_EXCEPTION, e.getMessage());
-                }
-            }
-        });
+        changeDirectory(getBackUpPath(), callBack);
     }
 
     @Override

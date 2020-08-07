@@ -32,9 +32,9 @@ interface IEZFtpClient {
 
     void getCurDirPath(@Nullable OnEZCallBack<String> callBack);
 
-    void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<Void> callBack);
+    void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<String> callBack);
 
-    void backup(@Nullable OnEZCallBack<Void> callBack);
+    void backup(@Nullable OnEZCallBack<String> callBack);
 
     void downloadFile(@NonNull String remoteName, @NonNull String localFilePath);
 
