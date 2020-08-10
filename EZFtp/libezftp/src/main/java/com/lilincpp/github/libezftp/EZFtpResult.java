@@ -1,7 +1,7 @@
 package com.lilincpp.github.libezftp;
 
 
-public interface EZResult {
+public interface EZFtpResult {
 
     int RESULT_OK = 0;
     int RESULT_FAIL = 1;

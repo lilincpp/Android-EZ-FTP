@@ -3,20 +3,23 @@ package com.lilincpp.github.libezftp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.lilincpp.github.libezftp.callback.OnEZCallBack;
+import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
+import com.lilincpp.github.libezftp.callback.OnEZFtpDataTransferCallback;
 
 import java.util.List;
 
 /**
  * FTP 客户端操作接口
+ *
  * @author lilin
  */
 interface IEZFtpClient {
 
     /**
      * Connect FTP Server
+     *
      * @param serverIp ftp server ip
-     * @param port ftp server port
+     * @param port     ftp server port
      * @param userName login username
      * @param password login password
      */
@@ -29,25 +32,25 @@ interface IEZFtpClient {
                  @NonNull int port,
                  @NonNull String userName,
                  @NonNull String password,
-                 @Nullable OnEZCallBack<Void> callBack);
+                 @Nullable OnEZFtpCallBack<Void> callBack);
 
     void disconnect();
 
-    void disconnect(@Nullable OnEZCallBack<Void> callBack);
+    void disconnect(@Nullable OnEZFtpCallBack<Void> callBack);
 
     ////////////////////////////////////////
 
-    void getCurDirFileList(@Nullable OnEZCallBack<List<EZFtpFile>> callBack);
+    void getCurDirFileList(@Nullable OnEZFtpCallBack<List<EZFtpFile>> callBack);
 
-    void getCurDirPath(@Nullable OnEZCallBack<String> callBack);
+    void getCurDirPath(@Nullable OnEZFtpCallBack<String> callBack);
 
-    void changeDirectory(@NonNull String path, @Nullable OnEZCallBack<String> callBack);
+    void changeDirectory(@NonNull String path, @Nullable OnEZFtpCallBack<String> callBack);
 
-    void backup(@Nullable OnEZCallBack<String> callBack);
+    void backup(@Nullable OnEZFtpCallBack<String> callBack);
 
-    void downloadFile(@NonNull String remoteName, @NonNull String localFilePath);
+    void downloadFile(@NonNull EZFtpFile remoteFile, @NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback);
 
-    void uploadFile(@NonNull String localFilePath, @NonNull String remotePath);
+    void uploadFile(@NonNull String localFilePath, @NonNull String remotePath, @Nullable OnEZFtpDataTransferCallback callback);
 
     ////////////////////////////////////////
 
@@ -55,7 +58,7 @@ interface IEZFtpClient {
 
     boolean curDirIsHomeDir();
 
-    void backToHomeDir(OnEZCallBack<String> callBack);
+    void backToHomeDir(OnEZFtpCallBack<String> callBack);
 
     ////////////////////////////////////////
 }

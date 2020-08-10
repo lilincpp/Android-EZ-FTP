@@ -1,6 +1,6 @@
 package com.lilincpp.github.libezftp.callback;
 
-public interface OnEZCallBack<E> {
+public interface OnEZFtpCallBack<E> {
 
     void onSuccess(E response);
 

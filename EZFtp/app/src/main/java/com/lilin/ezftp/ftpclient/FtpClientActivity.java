@@ -16,7 +16,7 @@ import com.lilin.ezftp.R;
 import com.lilin.ezftp.databinding.ActivityFtpClientBinding;
 import com.lilincpp.github.libezftp.EZFtpClient;
 import com.lilincpp.github.libezftp.EZFtpFile;
-import com.lilincpp.github.libezftp.callback.OnEZCallBack;
+import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
 
 import java.util.List;
 
@@ -33,7 +33,6 @@ public class FtpClientActivity extends AppCompatActivity {
     private EZFtpClient ftpClient;
     private ActivityFtpClientBinding binding;
     private FtpFilesAdapter ftpFilesAdapter;
-    private String curDirPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class FtpClientActivity extends AppCompatActivity {
     }
 
     private void updateCurDirPathView(String path) {
-        curDirPath = path;
         binding.tvCurDirPath.setText(path);
         binding.btnBackup.setVisibility(ftpClient.curDirIsHomeDir() ? View.INVISIBLE : View.VISIBLE);
     }
@@ -80,7 +78,7 @@ public class FtpClientActivity extends AppCompatActivity {
     }
 
     private void updateCurDirPath() {
-        ftpClient.getCurDirPath(new OnEZCallBack<String>() {
+        ftpClient.getCurDirPath(new OnEZFtpCallBack<String>() {
             @Override
             public void onSuccess(String response) {
                 updateOutputMsg("update remote dir success");
@@ -97,7 +95,7 @@ public class FtpClientActivity extends AppCompatActivity {
 
     private void updateFileList() {
         if (ftpClient != null) {
-            ftpClient.getCurDirFileList(new OnEZCallBack<List<EZFtpFile>>() {
+            ftpClient.getCurDirFileList(new OnEZFtpCallBack<List<EZFtpFile>>() {
                 @Override
                 public void onSuccess(List<EZFtpFile> response) {
                     updateOutputMsg("update remote file list success");
@@ -129,7 +127,7 @@ public class FtpClientActivity extends AppCompatActivity {
                 FtpConfig.DEFAULT_PORT,
                 FtpConfig.DEFAULT_USER,
                 FtpConfig.DEFAULT_PASSWORD,
-                new OnEZCallBack<Void>() {
+                new OnEZFtpCallBack<Void>() {
                     @Override
                     public void onSuccess(Void response) {
                         updateOutputMsg("Connect success!");
@@ -148,7 +146,7 @@ public class FtpClientActivity extends AppCompatActivity {
 
     private void disconnectFtpServer() {
         if (ftpClient != null) {
-            ftpClient.disconnect(new OnEZCallBack<Void>() {
+            ftpClient.disconnect(new OnEZFtpCallBack<Void>() {
                 @Override
                 public void onSuccess(Void response) {
                     updateOutputMsg("Disconnect server!");
@@ -162,6 +160,7 @@ public class FtpClientActivity extends AppCompatActivity {
         }
     }
 
+
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -174,7 +173,7 @@ public class FtpClientActivity extends AppCompatActivity {
                     break;
                 case R.id.btn_backup:
                     if (ftpClient != null) {
-                        ftpClient.backup(new OnEZCallBack<String>() {
+                        ftpClient.backup(new OnEZFtpCallBack<String>() {
                             @Override
                             public void onSuccess(String response) {
                                 updateOutputMsg("Backup success!");
@@ -200,6 +199,7 @@ public class FtpClientActivity extends AppCompatActivity {
         public void onClick(EZFtpFile ftpFile) {
             //click item
             if (ftpFile.getType() == EZFtpFile.TYPE_DIRECTORY) {
+                //if type is dir changed remote path
                 final String targetPath;
                 final String remoteFileDirPath = ftpFile.getRemotePath();
                 if (remoteFileDirPath.endsWith("/")) {
@@ -207,7 +207,7 @@ public class FtpClientActivity extends AppCompatActivity {
                 } else {
                     targetPath = remoteFileDirPath + "/" + ftpFile.getName();
                 }
-                ftpClient.changeDirectory(targetPath, new OnEZCallBack<String>() {
+                ftpClient.changeDirectory(targetPath, new OnEZFtpCallBack<String>() {
                     @Override
                     public void onSuccess(String response) {
                         updateOutputMsg("Changed ftp dir[" + targetPath + "] success!");
