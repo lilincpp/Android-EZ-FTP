@@ -14,6 +14,14 @@
 
     <string name="backup">Backup</string>
 
+    <string name="input_server_ip">Please input server ip</string>
+    <string name="input_server_port">Please input server port</string>
+    <string name="input_user">Please input user name</string>
+    <string name="input_password">Please input user password</string>
+    <string name="title_server_ip_and_port">Please input server ip and port</string>
+    <string name="title_user">Username:</string>
+    <string name="title_password">Password:</string>
+
     <string name="file">File</string>
     <string name="dir">Direction</string>
     <string name="link">Link</string>

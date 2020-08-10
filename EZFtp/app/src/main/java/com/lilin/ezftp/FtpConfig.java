@@ -1,4 +1,4 @@
-package com.lilin.ezftp.ftpclient;
+package com.lilin.ezftp;
 
 public final class FtpConfig {
 

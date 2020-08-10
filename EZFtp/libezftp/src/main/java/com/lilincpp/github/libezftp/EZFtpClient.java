@@ -1,9 +1,11 @@
 package com.lilincpp.github.libezftp;
 
+import android.Manifest;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 
 import com.lilincpp.github.libezftp.callback.OnEZCallBack;
 
@@ -18,10 +20,10 @@ public final class EZFtpClient implements IEZFtpClient {
 
     private static final String TAG = "EZFtpClient";
 
-    private EZFtpClientIml ftpClientIml;
+    private EZFtpClientImpl ftpClientIml;
 
     public EZFtpClient() {
-        ftpClientIml = new EZFtpClientIml();
+        ftpClientIml = new EZFtpClientImpl();
     }
 
     @Override
@@ -32,8 +34,6 @@ public final class EZFtpClient implements IEZFtpClient {
     @Override
     public void connect(@NonNull String serverIp, @NonNull int port, @NonNull String userName, @NonNull String password, @Nullable OnEZCallBack<Void> callBack) {
         if (ftpClientIml != null) {
-            Log.d(TAG, "connect ftp server : serverIp = " + serverIp + ",port = " + port
-                    + ",user = " + userName + ",pw = " + password);
             ftpClientIml.connect(serverIp, port, userName, password, callBack);
         }
     }
@@ -88,6 +88,7 @@ public final class EZFtpClient implements IEZFtpClient {
         }
     }
 
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     @Override
     public void downloadFile(@NonNull String remoteName, @NonNull String localFilePath) {
         if (ftpClientIml != null) {
@@ -95,6 +96,7 @@ public final class EZFtpClient implements IEZFtpClient {
         }
     }
 
+    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     @Override
     public void uploadFile(@NonNull String localFilePath, @NonNull String remotePath) {
         if (ftpClientIml != null) {

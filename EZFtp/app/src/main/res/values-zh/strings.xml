@@ -13,6 +13,13 @@
     <string name="disconnect_ftp_server">断开FTP服务器</string>
 
     <string name="backup">返回上一级</string>
+    <string name="input_server_ip">请输入服务端的IP</string>
+    <string name="input_server_port">请输入服务端的端口</string>
+    <string name="input_user">请输入用户名</string>
+    <string name="input_password">请输入密码</string>
+    <string name="title_server_ip_and_port">请输入服务端的IP及端口</string>
+    <string name="title_user">用户名:</string>
+    <string name="title_password">密码:</string>
 
     <string name="file">文件</string>
     <string name="dir">文件夹</string>

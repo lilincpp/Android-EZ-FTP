@@ -5,6 +5,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,9 +27,12 @@ import it.sauronsoftware.ftp4j.FTPListParseException;
 
 /**
  * FTP客户端具体实现类
+ *
+ * @author lilin
  */
-class EZFtpClientIml implements IEZFtpClient {
+class EZFtpClientImpl implements IEZFtpClient {
 
+    private static final String TAG = "EZFtpClientImpl";
     private static final String HOME_DIR = "/";
 
     private FTPClient ftpClient;
@@ -40,17 +44,7 @@ class EZFtpClientIml implements IEZFtpClient {
     private boolean isInit = false;
     private String curDirPath;
 
-    private static final class CallBackHolder {
-        Object callback;
-        Object response;
-
-        public CallBackHolder(Object callback, Object response) {
-            this.callback = callback;
-            this.response = response;
-        }
-    }
-
-    EZFtpClientIml() {
+    EZFtpClientImpl() {
         init();
     }
 
@@ -95,12 +89,16 @@ class EZFtpClientIml implements IEZFtpClient {
             if (taskHandler != null) {
                 taskHandler.removeCallbacksAndMessages(null);
             }
+            if (mainThreadHandler != null) {
+                mainThreadHandler.removeCallbacksAndMessages(null);
+            }
+            isInit = false;
         }
     }
 
     private void checkInit() {
         if (!isInit) {
-            throw new EZNoInitException("EZFtpClient is not init");
+            throw new EZNoInitException("EZFtpClient is not init or has been released！");
         }
     }
 
@@ -124,7 +122,8 @@ class EZFtpClientIml implements IEZFtpClient {
 
     }
 
-    private void callbackSuccess(final OnEZCallBack callBack, final Object response) {
+    @SuppressWarnings("unchecked")
+    private void callbackSuccess(@Nullable final OnEZCallBack callBack, @Nullable final Object response) {
         synchronized (lock) {
             if (callBack != null) {
                 mainThreadHandler.post(new Runnable() {
@@ -137,7 +136,8 @@ class EZFtpClientIml implements IEZFtpClient {
         }
     }
 
-    private void callbackFail(final OnEZCallBack callBack, final int code, final String msg) {
+    @SuppressWarnings("unchecked")
+    private void callbackFail(@Nullable final OnEZCallBack callBack, final int code, final String msg) {
         synchronized (lock) {
             if (callBack != null) {
                 mainThreadHandler.post(new Runnable() {
@@ -159,6 +159,8 @@ class EZFtpClientIml implements IEZFtpClient {
     @Override
     public void connect(@NonNull final String serverIp, @NonNull final int port, @NonNull final String userName, @NonNull final String password, @Nullable final OnEZCallBack<Void> callBack) {
         checkInit();
+        Log.d(TAG, "connect ftp server : serverIp = " + serverIp + ",port = " + port
+                + ",user = " + userName + ",pw = " + password);
         taskHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -183,6 +185,7 @@ class EZFtpClientIml implements IEZFtpClient {
     @Override
     public void disconnect() {
         disconnect(null);
+        release();
     }
 
     @Override
@@ -275,7 +278,7 @@ class EZFtpClientIml implements IEZFtpClient {
     }
 
     @Override
-    public void changeDirectory(@NonNull final String path, @Nullable final OnEZCallBack<String> callBack) {
+    public void changeDirectory(@Nullable final String path, @Nullable final OnEZCallBack<String> callBack) {
         checkInit();
         taskHandler.post(new Runnable() {
             @Override
@@ -303,13 +306,18 @@ class EZFtpClientIml implements IEZFtpClient {
 
     @Override
     public void backup(@Nullable final OnEZCallBack<String> callBack) {
-        checkInit();
         changeDirectory(getBackUpPath(), callBack);
+    }
+
+    @Override
+    public void backToHomeDir(OnEZCallBack<String> callBack) {
+        changeDirectory(HOME_DIR, callBack);
     }
 
     @Override
     public void downloadFile(@NonNull String remoteName, @NonNull String localFilePath) {
         //TODO
+        checkInit();
     }
 
     @Override
@@ -320,10 +328,5 @@ class EZFtpClientIml implements IEZFtpClient {
     @Override
     public boolean curDirIsHomeDir() {
         return TextUtils.equals(curDirPath, HOME_DIR);
-    }
-
-    @Override
-    public void backToHomeDir(OnEZCallBack<String> callBack) {
-        changeDirectory(HOME_DIR, callBack);
     }
 }

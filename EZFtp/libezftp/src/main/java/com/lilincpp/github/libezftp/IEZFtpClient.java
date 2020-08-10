@@ -7,8 +7,19 @@ import com.lilincpp.github.libezftp.callback.OnEZCallBack;
 
 import java.util.List;
 
+/**
+ * FTP 客户端操作接口
+ * @author lilin
+ */
 interface IEZFtpClient {
 
+    /**
+     * Connect FTP Server
+     * @param serverIp ftp server ip
+     * @param port ftp server port
+     * @param userName login username
+     * @param password login password
+     */
     void connect(@NonNull String serverIp,
                  @NonNull int port,
                  @NonNull String userName,

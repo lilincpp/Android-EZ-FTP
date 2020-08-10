@@ -5,7 +5,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/tv_type"
@@ -16,15 +19,15 @@
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
-            android:layout_marginStart="16dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_size"
-            android:layout_marginEnd="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp" />
 
         <TextView
             android:id="@+id/tv_date"
