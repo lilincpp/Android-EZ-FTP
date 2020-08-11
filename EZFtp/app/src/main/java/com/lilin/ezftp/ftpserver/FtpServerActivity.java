@@ -67,7 +67,7 @@ public class FtpServerActivity extends BaseActivity {
                                 + "serverIp=" + serverIp + "\n\n"
                                 + "Ftp Server is running!" + "\n"
                                 + "1.Browser open url: ftp://" + serverIp + "\n"
-                                + "2.Use this or other ftp client connect server");
+                                + "2.Use this or other ftp client connect server\n");
             }
         }
 
