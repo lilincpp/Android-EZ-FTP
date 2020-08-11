@@ -2,7 +2,6 @@ package com.lilincpp.github.libezftp;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -11,7 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
 import com.lilincpp.github.libezftp.callback.OnEZFtpDataTransferCallback;
-import com.lilincpp.github.libezftp.exceptions.EZNoInitException;
+import com.lilincpp.github.libezftp.exceptions.EZFtpNoInitException;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,7 +94,7 @@ final class EZFtpClientImpl implements IEZFtpClient {
 
     private void checkInit() {
         if (!isInit) {
-            throw new EZNoInitException("EZFtpClient is not init or has been released！");
+            throw new EZFtpNoInitException("EZFtpClient is not init or has been released！");
         }
     }
 
@@ -151,13 +150,13 @@ final class EZFtpClientImpl implements IEZFtpClient {
                     getCurDirPath(null);
                     callbackNormalSuccess(callBack, null);
                 } catch (IOException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "Read server response fail!");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
                 } catch (FTPException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (IllegalStateException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 }
             }
         });
@@ -166,7 +165,6 @@ final class EZFtpClientImpl implements IEZFtpClient {
     @Override
     public void disconnect() {
         disconnect(null);
-        release();
     }
 
     @Override
@@ -177,15 +175,16 @@ final class EZFtpClientImpl implements IEZFtpClient {
             public void run() {
                 try {
                     ftpClient.disconnect(true);
+                    release();
                     callbackNormalSuccess(callBack, null);
                 } catch (IOException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "Read server response fail!");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
                 } catch (FTPException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (IllegalStateException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 }
             }
         });
@@ -217,19 +216,19 @@ final class EZFtpClientImpl implements IEZFtpClient {
                     }
                     callbackNormalSuccess(callBack, ezFtpFiles);
                 } catch (IOException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "Read server response fail!");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
                 } catch (FTPException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (IllegalStateException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (FTPDataTransferException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (FTPAbortedException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (FTPListParseException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 }
             }
         });
@@ -246,13 +245,13 @@ final class EZFtpClientImpl implements IEZFtpClient {
                     setCurDirPath(path);
                     callbackNormalSuccess(callBack, path);
                 } catch (IOException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "Read server response fail!");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
                 } catch (FTPException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (IllegalStateException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 }
             }
         });
@@ -266,20 +265,20 @@ final class EZFtpClientImpl implements IEZFtpClient {
             public void run() {
                 try {
                     if (TextUtils.isEmpty(path)) {
-                        callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "path is empty!");
+                        callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "path is empty!");
                     } else {
                         ftpClient.changeDirectory(path);
                         setCurDirPath(path);
                         callbackNormalSuccess(callBack, path);
                     }
                 } catch (IOException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_FAIL, "Read server response fail!");
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
                 } catch (FTPException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (IllegalStateException e) {
-                    callbackNormalFail(callBack, EZFtpResult.RESULT_EXCEPTION, e.getMessage());
+                    callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 }
             }
         });
@@ -321,31 +320,34 @@ final class EZFtpClientImpl implements IEZFtpClient {
 
                         @Override
                         public void completed() {
-                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.COMPLETE);
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.COMPLETED);
                         }
 
                         @Override
                         public void aborted() {
-                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.COMPLETE);
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ABORTED);
                         }
 
                         @Override
                         public void failed() {
                             callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
-                            callbackWrapper.onErr(EZFtpResult.RESULT_FAIL, "Download file fail!");
+                            callbackWrapper.onErr(EZFtpResultCode.RESULT_FAIL, "Download file fail!");
                         }
                     });
                 } catch (IOException e) {
                     callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
-                    callbackWrapper.onErr(EZFtpResult.RESULT_EXCEPTION, "IOException");
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
-                    e.printStackTrace();
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, "Read server response fail!");
                 } catch (FTPException e) {
-                    e.printStackTrace();
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (FTPDataTransferException e) {
-                    e.printStackTrace();
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
                 } catch (FTPAbortedException e) {
-                    e.printStackTrace();
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ABORTED);
                 }
             }
         });

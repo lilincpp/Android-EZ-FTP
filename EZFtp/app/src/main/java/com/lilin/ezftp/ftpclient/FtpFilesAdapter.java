@@ -21,6 +21,8 @@ import java.util.List;
 /**
  * 文件列表适配器
  *
+ * ftp server file list adapter
+ *
  * @author lilin
  */
 public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHolder> {

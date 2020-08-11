@@ -10,8 +10,7 @@ public abstract class EZFtpTransferSpeedCallback implements OnEZFtpDataTransferC
 
     private long startTime, endTime;
     private long totalSize, tempTotalSize;
-    private ScheduledExecutorService executors =
-            Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService executors = Executors.newSingleThreadScheduledExecutor();
     private boolean isFinish = false;
 
     private Runnable calcSpeedTask = new Runnable() {
@@ -46,9 +45,11 @@ public abstract class EZFtpTransferSpeedCallback implements OnEZFtpDataTransferC
                         TimeUnit.MILLISECONDS);
                 break;
             case OnEZFtpDataTransferCallback.ERROR:
-            case OnEZFtpDataTransferCallback.COMPLETE:
-                endTime = System.currentTimeMillis();
+            case OnEZFtpDataTransferCallback.COMPLETED:
+            case OnEZFtpDataTransferCallback.ABORTED:
                 isFinish = true;
+                endTime = System.currentTimeMillis();
+                executors.shutdown();
                 break;
             default:
                 break;

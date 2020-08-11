@@ -77,7 +77,10 @@ public class FtpClientActivity extends AppCompatActivity {
         binding.tvMsg.setText(oldMsg + "\n" + msg);
     }
 
-    private void updateCurDirPath() {
+    /**
+     * request ftp server cur dir path
+     */
+    private void requestFtpCurDirPath() {
         ftpClient.getCurDirPath(new OnEZFtpCallBack<String>() {
             @Override
             public void onSuccess(String response) {
@@ -93,7 +96,10 @@ public class FtpClientActivity extends AppCompatActivity {
         });
     }
 
-    private void updateFileList() {
+    /**
+     * request ftp server file list
+     */
+    private void requestFtpFileList() {
         if (ftpClient != null) {
             ftpClient.getCurDirFileList(new OnEZFtpCallBack<List<EZFtpFile>>() {
                 @Override
@@ -110,6 +116,9 @@ public class FtpClientActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * connect ftp server
+     */
     private void connectFtpServer() {
         ftpClient = new EZFtpClient();
         //获取热点的IP地址
@@ -131,8 +140,8 @@ public class FtpClientActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void response) {
                         updateOutputMsg("Connect success!");
-                        updateCurDirPath();
-                        updateFileList();
+                        requestFtpCurDirPath();
+                        requestFtpFileList();
                     }
 
                     @Override
@@ -144,6 +153,9 @@ public class FtpClientActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * disconnect ftp server
+     */
     private void disconnectFtpServer() {
         if (ftpClient != null) {
             ftpClient.disconnect(new OnEZFtpCallBack<Void>() {
@@ -160,7 +172,9 @@ public class FtpClientActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * the layout item click event
+     */
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -178,7 +192,7 @@ public class FtpClientActivity extends AppCompatActivity {
                             public void onSuccess(String response) {
                                 updateOutputMsg("Backup success!");
                                 updateCurDirPathView(response);
-                                updateFileList();
+                                requestFtpFileList();
                             }
 
                             @Override
@@ -194,6 +208,9 @@ public class FtpClientActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * List item click event
+     */
     private FtpFilesAdapter.OnItemClickListener onItemClickListener = new FtpFilesAdapter.OnItemClickListener() {
         @Override
         public void onClick(EZFtpFile ftpFile) {
@@ -212,7 +229,7 @@ public class FtpClientActivity extends AppCompatActivity {
                     public void onSuccess(String response) {
                         updateOutputMsg("Changed ftp dir[" + targetPath + "] success!");
                         updateCurDirPathView(response);
-                        updateFileList();
+                        requestFtpFileList();
                     }
 
                     @Override

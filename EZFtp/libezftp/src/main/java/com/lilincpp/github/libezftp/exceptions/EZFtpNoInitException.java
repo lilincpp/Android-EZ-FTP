@@ -5,13 +5,13 @@ package com.lilincpp.github.libezftp.exceptions;
  *
  * @author lilin
  */
-public class EZNoInitException extends IllegalStateException {
+public class EZFtpNoInitException extends IllegalStateException {
 
-    public EZNoInitException() {
+    public EZFtpNoInitException() {
         super();
     }
 
-    public EZNoInitException(String s) {
+    public EZFtpNoInitException(String s) {
         super(s);
     }
 }

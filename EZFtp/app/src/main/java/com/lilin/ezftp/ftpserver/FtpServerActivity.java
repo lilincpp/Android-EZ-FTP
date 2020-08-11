@@ -1,9 +1,10 @@
 package com.lilin.ezftp.ftpserver;
 
-import androidx.appcompat.app.AppCompatActivity;
+
+import com.lilin.ezftp.BaseActivity;
 
 /**
  * @author lilin
  */
-public class FtpServerActivity extends AppCompatActivity {
+public class FtpServerActivity extends BaseActivity {
 }
