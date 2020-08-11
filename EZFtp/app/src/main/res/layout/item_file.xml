@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+
+        <variable
+            name="type"
+            type="String" />
+        <variable
+            name="fileName"
+            type="String" />
+        <variable
+            name="fileSize"
+            type="String" />
+        <variable
+            name="fileDate"
+            type="String" />
+
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,6 +31,7 @@
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{type}"
             android:textColor="@color/colorPrimaryDark" />
 
         <TextView
@@ -21,22 +39,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="@{fileName}"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{fileSize}"
             android:layout_marginEnd="16dp" />
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
+            android:text="@{fileDate}"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <data>
-
-    </data>
 </layout>

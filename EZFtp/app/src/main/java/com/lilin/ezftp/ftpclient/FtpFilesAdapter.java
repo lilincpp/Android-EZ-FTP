@@ -79,10 +79,10 @@ public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHo
             holder.binding.tvSize.setVisibility(View.GONE);
         }
 
-        holder.binding.tvName.setText(ftpFile.getName());
-        holder.binding.tvType.setText(fileType);
-        holder.binding.tvSize.setText(ConvertUtils.byte2FitMemorySize(ftpFile.getSize(), 1));
-        holder.binding.tvDate.setText(TimeUtils.date2String(ftpFile.getModifiedDate()));
+        holder.binding.setFileName(ftpFile.getName());
+        holder.binding.setType(fileType);
+        holder.binding.setFileSize(ConvertUtils.byte2FitMemorySize(ftpFile.getSize(), 1));
+        holder.binding.setFileDate(TimeUtils.date2String(ftpFile.getModifiedDate()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

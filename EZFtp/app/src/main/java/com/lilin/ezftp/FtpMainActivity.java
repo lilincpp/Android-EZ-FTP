@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.lilin.ezftp.databinding.ActivityFtpMainBinding;
 import com.lilin.ezftp.ftpclient.FtpClientActivity;
+import com.lilin.ezftp.ftpserver.FtpServerActivity;
 
 public class FtpMainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -42,6 +43,7 @@ public class FtpMainActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_as_server:
+                startActivity(new Intent(this, FtpServerActivity.class));
                 break;
             case R.id.btn_as_client:
                 startActivity(new Intent(this, FtpClientActivity.class));

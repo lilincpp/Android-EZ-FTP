@@ -22,6 +22,9 @@
     <string name="title_user">Username:</string>
     <string name="title_password">Password:</string>
 
+    <string name="run_ftp_server">Start FTP Server</string>
+    <string name="stop_ftp_server">Stop FTP Server</string>
+
     <string name="file">File</string>
     <string name="dir">Direction</string>
     <string name="link">Link</string>

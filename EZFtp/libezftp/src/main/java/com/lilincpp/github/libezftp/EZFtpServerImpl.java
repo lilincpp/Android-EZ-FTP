@@ -1,6 +1,5 @@
 package com.lilincpp.github.libezftp;
 
-import android.content.IntentFilter;
 
 import com.lilincpp.github.libezftp.exceptions.EZFtpNoInitException;
 import com.lilincpp.github.libezftp.user.EZFtpUser;
@@ -9,8 +8,8 @@ import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
-import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ final class EZFtpServerImpl implements IEZFtpServer {
     private final Object lock = new Object();
     private boolean isInit = false;
 
-    EZFtpServerImpl(List<EZFtpUser> users) {
+    EZFtpServerImpl(List<EZFtpUser> users, int port) {
         //配置参数
         FtpServerFactory serverFactory = new FtpServerFactory();
         //设置访问用户名和密码还有共享路径
@@ -39,6 +38,11 @@ final class EZFtpServerImpl implements IEZFtpServer {
                 e.printStackTrace();
             }
         }
+        //设置监听端口
+        ListenerFactory factory = new ListenerFactory();
+        factory.setPort(port);
+        serverFactory.addListener("default", factory.createListener());
+        //创建FTP服务实例
         ftpServer = serverFactory.createServer();
         isInit = true;
     }

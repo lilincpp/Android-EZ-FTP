@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="androidx.databinding.ObservableField" />
+
+        <variable
+            name="msg"
+            type="ObservableField&lt;String>" />
+
+        <variable
+            name="userName"
+            type="ObservableField&lt;String>" />
+
+        <variable
+            name="userPassword"
+            type="ObservableField&lt;String>" />
+
+        <variable
+            name="sharePath"
+            type="ObservableField&lt;String>" />
+
+        <variable
+            name="serverPort"
+            type="ObservableField&lt;Integer>" />
+
+        <variable
+            name="clickHolder"
+            type="com.lilin.ezftp.ftpserver.FtpServerActivity.ClickHolder" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_black_rectangle"
+            android:scrollbars="vertical"
+            android:text="@{msg}"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{`user:`+userName+`\npw:`+userPassword+`\nport:`+serverPort+`\nshare path`+sharePath}" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_black_rectangle"
+            android:text="@={userName}" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_black_rectangle"
+            android:text="@={userPassword}" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_black_rectangle"
+            android:text="@={sharePath}" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_black_rectangle"
+            android:text="@={serverPort+``}" />
+
+        <Button
+            android:id="@+id/btn_start_server"
+            style="@style/BtnStyle"
+            android:onClick="@{()->clickHolder.startFtpServer(userName,userPassword,sharePath,serverPort)}"
+            android:text="@string/run_ftp_server" />
+
+        <Button
+            android:id="@+id/btn_stop_server"
+            style="@style/BtnStyle"
+            android:onClick="@{()->clickHolder.stopFtpServer()}"
+            android:text="@string/stop_ftp_server" />
+
+    </LinearLayout>
+</layout>
