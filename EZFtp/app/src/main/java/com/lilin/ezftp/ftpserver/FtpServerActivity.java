@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -63,8 +62,8 @@ public class FtpServerActivity extends BaseActivity {
             if (activity.get() != null) {
                 activity.get().uploadMsg(
                         "username=" + name + "\n"
-                                + "pw:" + pw + "\n"
-                                + "share path:" + sharePath + "\n"
+                                + "pw=" + pw + "\n"
+                                + "share path=" + sharePath + "\n"
                                 + "serverIp=" + serverIp + "\n\n"
                                 + "Ftp Server is running!" + "\n"
                                 + "1.Browser open url: ftp://" + serverIp + "\n"
