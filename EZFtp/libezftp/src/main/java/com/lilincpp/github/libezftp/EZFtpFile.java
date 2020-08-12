@@ -1,12 +1,15 @@
 package com.lilincpp.github.libezftp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 远端文件信息
  */
-public final class EZFtpFile implements Serializable {
+public final class EZFtpFile implements Parcelable {
 
     public static final int TYPE_FILE = 0;
     public static final int TYPE_DIRECTORY = 1;
@@ -45,6 +48,40 @@ public final class EZFtpFile implements Serializable {
 
     public Date getModifiedDate() {
         return modifiedDate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(remotePath);
+        dest.writeInt(type);
+        dest.writeLong(size);
+        dest.writeSerializable(modifiedDate);
+    }
+
+    private static final Parcelable.Creator<EZFtpFile> CREATOR = new Creator<EZFtpFile>() {
+        @Override
+        public EZFtpFile createFromParcel(Parcel source) {
+            return new EZFtpFile(source);
+        }
+
+        @Override
+        public EZFtpFile[] newArray(int size) {
+            return new EZFtpFile[size];
+        }
+    };
+
+    private EZFtpFile(Parcel in) {
+        this.name = in.readString();
+        this.remotePath = in.readString();
+        this.type = in.readInt();
+        this.size = in.readLong();
+        this.modifiedDate = (Date) in.readSerializable();
     }
 
     @Override
