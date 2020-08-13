@@ -300,14 +300,13 @@ public class FtpClientActivity extends AppCompatActivity {
         StringBuilder builder = new StringBuilder();
 
         if (isFinished) {
-            builder.append("Completed download!")
-                    .append("\n")
-                    .append(ftpFile.getName());
+            downloadAlertDialog.setTitle("Completed download!");
         } else {
-            builder.append("Downloading")
-                    .append("\n")
-                    .append(ftpFile.getName());
+            downloadAlertDialog.setTitle("Downloading");
         }
+
+        builder.append("FileName : ")
+                .append(ftpFile.getName());
 
         builder.append("\nFile Size :")
                 .append(ConvertUtils.byte2MemorySize(ftpFile.getSize(), MemoryConstants.MB))
@@ -339,6 +338,7 @@ public class FtpClientActivity extends AppCompatActivity {
                 .append("Now speed : ")
                 .append(String.format(Locale.CHINA, "%.2fKB/S", speed));
 
+        downloadAlertDialog.setMessage(builder.toString());
 
         if (!downloadAlertDialog.isShowing()) {
             downloadAlertDialog.show();
