@@ -51,7 +51,7 @@ interface IEZFtpClient {
 
     void downloadFile(@NonNull EZFtpFile remoteFile, @NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback);
 
-    void uploadFile(@NonNull String localFilePath, @NonNull String remotePath, @Nullable OnEZFtpDataTransferCallback callback);
+    void uploadFile(@NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback);
 
     ////////////////////////////////////////
 
@@ -62,4 +62,6 @@ interface IEZFtpClient {
     void backToHomeDir(OnEZFtpCallBack<String> callBack);
 
     ////////////////////////////////////////
+
+    void release();
 }

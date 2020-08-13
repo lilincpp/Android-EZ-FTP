@@ -74,15 +74,13 @@ public final class EZFtpClient implements IEZFtpClient {
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     @Override
     public void downloadFile(@NonNull EZFtpFile remoteFile, @NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
-        if (ftpClientIml != null) {
-            ftpClientIml.downloadFile(remoteFile, localFilePath, callback);
-        }
+        ftpClientIml.downloadFile(remoteFile, localFilePath, callback);
     }
 
     @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     @Override
-    public void uploadFile(@NonNull String localFilePath, @NonNull String remotePath, @Nullable OnEZFtpDataTransferCallback callback) {
-        ftpClientIml.uploadFile(localFilePath, remotePath, callback);
+    public void uploadFile(@NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
+        ftpClientIml.uploadFile(localFilePath, callback);
     }
 
     @Override
@@ -93,5 +91,10 @@ public final class EZFtpClient implements IEZFtpClient {
     @Override
     public void backToHomeDir(OnEZFtpCallBack<String> callBack) {
         ftpClientIml.backToHomeDir(callBack);
+    }
+
+    @Override
+    public void release() {
+        ftpClientIml.release();
     }
 }

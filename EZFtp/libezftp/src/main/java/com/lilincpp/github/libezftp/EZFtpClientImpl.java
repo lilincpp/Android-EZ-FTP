@@ -73,7 +73,8 @@ final class EZFtpClientImpl implements IEZFtpClient {
     /**
      * 释放资源
      */
-    private void release() {
+    @Override
+    public void release() {
         synchronized (lock) {
             //检查FTP客户端是否仍然连接
             //如果仍然在连接的话，则先断开
@@ -103,16 +104,18 @@ final class EZFtpClientImpl implements IEZFtpClient {
             return null;
         }
 
-        //此时是根目录
-        if (curDirPath.length() == 1) {
-            return curDirPath;
+        //当是Home目录时，则不可以再放回上一级了
+        if (TextUtils.equals(curDirPath, HOME_DIR)) {
+            return HOME_DIR;
         }
 
         //获取最后一个文件符斜杠的下标
         final int lastIndex = curDirPath.lastIndexOf("/");
-        //substring不会包含最后一个字符，因此如果是[/lilin]
+        //substring不会包含最后一个字符，因此如果是[/lilin]，返回的是"/"
+        //substring不会包含最后一个字符，因此如果是[/lilin/cpp]，返回的是"/lilin"
+        //lastIndex为0时，表示是在二级目录
         if (lastIndex == 0) {
-            return "/";
+            return HOME_DIR;
         }
         return curDirPath.substring(0, lastIndex);
 
@@ -175,8 +178,8 @@ final class EZFtpClientImpl implements IEZFtpClient {
             public void run() {
                 try {
                     ftpClient.disconnect(true);
-                    release();
                     callbackNormalSuccess(callBack, null);
+                    release();
                 } catch (IOException e) {
                     callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
@@ -296,7 +299,6 @@ final class EZFtpClientImpl implements IEZFtpClient {
 
     @Override
     public void downloadFile(@NonNull final EZFtpFile remoteFile, @NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
-        //TODO
         checkInit();
 
         final File localFile = new File(localFilePath);
@@ -315,7 +317,7 @@ final class EZFtpClientImpl implements IEZFtpClient {
 
                         @Override
                         public void transferred(int i) {
-                            callbackWrapper.onTransferred(remoteFile.getSize(),i);
+                            callbackWrapper.onTransferred(remoteFile.getSize(), i);
                         }
 
                         @Override
@@ -354,8 +356,61 @@ final class EZFtpClientImpl implements IEZFtpClient {
     }
 
     @Override
-    public void uploadFile(@NonNull String localFilePath, @NonNull String remotePath, @Nullable OnEZFtpDataTransferCallback callback) {
-        //TODO
+    public void uploadFile(@NonNull final String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
+        checkInit();
+
+        final File localFile = new File(localFilePath);
+        final EZFtpTransferCallbackWrapper callbackWrapper
+                = new EZFtpTransferCallbackWrapper(callback);
+
+        taskHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ftpClient.upload(localFile, new FTPDataTransferListener() {
+                        @Override
+                        public void started() {
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.START);
+                        }
+
+                        @Override
+                        public void transferred(int i) {
+                            callbackWrapper.onTransferred(localFile.length(), i);
+                        }
+
+                        @Override
+                        public void completed() {
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.COMPLETED);
+                        }
+
+                        @Override
+                        public void aborted() {
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ABORTED);
+                        }
+
+                        @Override
+                        public void failed() {
+                            callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                            callbackWrapper.onErr(EZFtpResultCode.RESULT_FAIL, "Download file fail!");
+                        }
+                    });
+                } catch (IOException e) {
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, "IOException");
+                } catch (FTPIllegalReplyException e) {
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, "Read server response fail!");
+                } catch (FTPException e) {
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
+                } catch (FTPDataTransferException e) {
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ERROR);
+                    callbackWrapper.onErr(EZFtpResultCode.RESULT_EXCEPTION, e.getMessage());
+                } catch (FTPAbortedException e) {
+                    callbackWrapper.onStateChanged(OnEZFtpDataTransferCallback.ABORTED);
+                }
+            }
+        });
     }
 
     @Override
