@@ -25,6 +25,9 @@
     <string name="run_ftp_server">Start FTP Server</string>
     <string name="stop_ftp_server">Stop FTP Server</string>
 
+    <string name="download_file_tips">Do you want to download the file?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="file">File</string>
     <string name="dir">Direction</string>
     <string name="link">Link</string>

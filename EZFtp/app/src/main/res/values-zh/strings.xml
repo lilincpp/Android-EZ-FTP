@@ -24,6 +24,10 @@
     <string name="run_ftp_server">开启FTP服务</string>
     <string name="stop_ftp_server">关闭FTP服务</string>
 
+    <string name="download_file_tips">是否要下载该文件？</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+
     <string name="file">文件</string>
     <string name="dir">文件夹</string>
     <string name="link">链接</string>
