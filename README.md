@@ -11,7 +11,7 @@ EZFTP Library supports you to develop an FTP server and client，it support down
 
 ```java
 //config
-EZFtpUser ftpUser=new EZFtpUser(name, pw, sharePath, EZFtpUserPermission.WRITE);
+EZFtpUser ftpUser = new EZFtpUser(name, pw, sharePath, EZFtpUserPermission.WRITE);
 EZFtpServer ftpServer = new EZFtpServer.Builder()
     .addUser(ftpUser)
     .setListenPort(port)
