@@ -1,6 +1,8 @@
 package com.lilincpp.github.libezftp;
 
 
+import android.util.Log;
+
 import com.lilincpp.github.libezftp.exceptions.EZFtpNoInitException;
 import com.lilincpp.github.libezftp.user.EZFtpUser;
 
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class EZFtpServerImpl implements IEZFtpServer {
+
+    private static final String TAG = "EZFtpServerImpl";
 
     private FtpServer ftpServer;
     private final Object lock = new Object();

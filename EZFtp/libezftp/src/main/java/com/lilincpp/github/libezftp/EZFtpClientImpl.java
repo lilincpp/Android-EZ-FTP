@@ -153,6 +153,7 @@ final class EZFtpClientImpl implements IEZFtpClient {
                     getCurDirPath(null);
                     callbackNormalSuccess(callBack, null);
                 } catch (IOException e) {
+                    e.printStackTrace();
                     callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
                     callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");
@@ -219,6 +220,7 @@ final class EZFtpClientImpl implements IEZFtpClient {
                     }
                     callbackNormalSuccess(callBack, ezFtpFiles);
                 } catch (IOException e) {
+                    e.printStackTrace();
                     callbackNormalFail(callBack, EZFtpResultCode.RESULT_EXCEPTION, "IOException");
                 } catch (FTPIllegalReplyException e) {
                     callbackNormalFail(callBack, EZFtpResultCode.RESULT_FAIL, "Read server response fail!");

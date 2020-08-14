@@ -9,6 +9,6 @@ public final class FtpConfig {
     public static final String DEFAULT_SHARE_PATH = PathUtils
             .getExternalStoragePath();
 
-    public static final int DEFAULT_PORT = 9000;
+    public static final int DEFAULT_PORT = 9001;
 
 }

@@ -89,7 +89,7 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
         binding.btnUploadFile.setOnClickListener(this);
 
         binding.etServerIp.setText(NetworkUtils.getServerAddressByWifi());
-        binding.etServerPort.setText(FtpConfig.DEFAULT_PORT);
+        binding.etServerPort.setText(FtpConfig.DEFAULT_PORT + "");
         binding.etUsername.setText(FtpConfig.DEFAULT_USER);
         binding.etPassword.setText(FtpConfig.DEFAULT_PASSWORD);
 
@@ -170,7 +170,7 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
             ftpClient.getCurDirFileList(new OnEZFtpCallBack<List<EZFtpFile>>() {
                 @Override
                 public void onSuccess(List<EZFtpFile> response) {
-                    updateOutputMsg("update remote file list success");
+                    updateOutputMsg("update remote file list success,size = " + response.size());
                     ftpFilesAdapter.setFtpFiles(response);
                 }
 
@@ -199,9 +199,9 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
 
         ftpClient.connect(
                 serverIp,
-                FtpConfig.DEFAULT_PORT,
-                FtpConfig.DEFAULT_USER,
-                FtpConfig.DEFAULT_PASSWORD,
+                Integer.parseInt(serverPort),
+                username,
+                password,
                 new OnEZFtpCallBack<Void>() {
                     @Override
                     public void onSuccess(Void response) {
@@ -268,7 +268,7 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
                         updateOutputMsg("Changed ftp dir[" + targetPath + "] fail,Err:" + msg);
                     }
                 });
-            } else if (ftpFile.getType()==EZFtpFile.TYPE_FILE){
+            } else if (ftpFile.getType() == EZFtpFile.TYPE_FILE) {
                 //file or link
                 //download if type is file.
                 String msg = getString((R.string.download_file_tips)) + "(" + ftpFile.getName() + ")";
@@ -290,7 +290,7 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
                         .setCancelable(false)
                         .create()
                         .show();
-            }else {
+            } else {
                 //link
                 //TODO SOMETHING
             }
@@ -316,7 +316,7 @@ public class FtpClientActivity extends BaseActivity implements View.OnClickListe
             ftpClient.uploadFile(file.getAbsolutePath(), new EZFtpTransferSpeedCallback() {
                 @Override
                 public void onTransferSpeed(boolean isFinished, long startTime, long endTime, double speed, double averageSpeed) {
-                    Log.d(TAG, "onTransferSpeed: speed = "+speed+",isFinished = "+isFinished);
+                    Log.d(TAG, "onTransferSpeed: speed = " + speed + ",isFinished = " + isFinished);
                 }
             });
         }

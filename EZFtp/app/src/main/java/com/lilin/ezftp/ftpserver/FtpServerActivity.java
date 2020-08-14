@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -23,11 +24,15 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lilin
  */
 public class FtpServerActivity extends BaseActivity {
+
+    private static final String TAG = "FtpServerActivity";
     private ActivityFtpServerBinding binding;
 
     private ClickHolder clickHolder = new ClickHolder(this);
@@ -48,12 +53,17 @@ public class FtpServerActivity extends BaseActivity {
         }
 
         public void startFtpServer(String name, String pw, String sharePath, int port) {
+            Log.d(TAG, "startFtpServer: " + Thread.currentThread().getName());
             if (ftpServer == null) {
                 ftpServer = new EZFtpServer.Builder()
                         .addUser(new EZFtpUser(name, pw, sharePath, EZFtpUserPermission.WRITE))
                         .setListenPort(port)
                         .create();
                 ftpServer.start();
+            } else {
+                if (ftpServer.isStopped()) {
+                    ftpServer.start();
+                }
             }
 
             final String serverIp = NetworkUtils.getIPAddress(true) + ":" + port;

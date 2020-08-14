@@ -10,7 +10,9 @@
             android:id="@+id/tv_cur_dir_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -49,7 +51,7 @@
                 android:layout_below="@id/tv_input_title"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/shape_black_rectangle"
-                android:inputType="numberDecimal"
+                android:inputType="textShortMessage"
                 android:textSize="12sp" />
 
             <TextView
@@ -124,7 +126,7 @@
 
         </RelativeLayout>
 
-        <!--Output debug info or other msg -->
+        <!--Output debug info or other msg-->
         <TextView
             android:id="@+id/tv_msg"
             android:layout_width="match_parent"
@@ -138,7 +140,7 @@
         <Button
             android:id="@+id/btn_upload_file"
             style="@style/BtnStyle"
-            android:text="@string/connect_ftp_server" />
+            android:text="@string/choose_file_to_upload" />
 
         <Button
             android:id="@+id/btn_connect"
