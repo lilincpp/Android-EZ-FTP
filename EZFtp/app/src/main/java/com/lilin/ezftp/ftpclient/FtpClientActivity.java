@@ -1,7 +1,9 @@
 package com.lilin.ezftp.ftpclient;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -18,6 +20,8 @@ import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.UriUtils;
+import com.lilin.ezftp.BaseActivity;
 import com.lilin.ezftp.FtpConfig;
 import com.lilin.ezftp.R;
 import com.lilin.ezftp.databinding.ActivityFtpClientBinding;
@@ -26,6 +30,7 @@ import com.lilincpp.github.libezftp.EZFtpFile;
 import com.lilincpp.github.libezftp.callback.EZFtpTransferSpeedCallback;
 import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,12 +40,12 @@ import java.util.Locale;
  *
  * @author lilin
  */
-public class FtpClientActivity extends AppCompatActivity {
+public class FtpClientActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "FtpClientActivity";
+    private static final int REQUEST_CHOOSE_FILE = 100;
 
-    private static final String SAVE_FILE_PATH
-            = PathUtils.getExternalAppFilesPath();
+    private static final String SAVE_FILE_PATH = PathUtils.getExternalAppFilesPath();
 
     private EZFtpClient ftpClient;
     private ActivityFtpClientBinding binding;
@@ -61,15 +66,27 @@ public class FtpClientActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHOOSE_FILE) {
+            if (data != null && data.getData() != null) {
+                File file = UriUtils.uri2File(data.getData());
+                uploadFile(file);
+            }
+        }
+    }
+
     private void initView() {
         ftpFilesAdapter = new FtpFilesAdapter();
         ftpFilesAdapter.setOnItemClickListener(onItemClickListener);
         binding.rvDirList.setAdapter(ftpFilesAdapter);
         binding.rvDirList.setLayoutManager(new LinearLayoutManager(this));
 
-        binding.btnConnect.setOnClickListener(onClickListener);
-        binding.btnDisconnect.setOnClickListener(onClickListener);
-        binding.btnBackup.setOnClickListener(onClickListener);
+        binding.btnConnect.setOnClickListener(this);
+        binding.btnDisconnect.setOnClickListener(this);
+        binding.btnBackup.setOnClickListener(this);
+        binding.btnUploadFile.setOnClickListener(this);
 
         binding.etServerIp.setText(NetworkUtils.getServerAddressByWifi());
         binding.etServerPort.setText(FtpConfig.DEFAULT_PORT);
@@ -77,6 +94,43 @@ public class FtpClientActivity extends AppCompatActivity {
         binding.etPassword.setText(FtpConfig.DEFAULT_PASSWORD);
 
         binding.tvMsg.setMovementMethod(ScrollingMovementMethod.getInstance());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_connect:
+                connectFtpServer();
+                break;
+            case R.id.btn_disconnect:
+                disconnectFtpServer();
+                break;
+            case R.id.btn_backup:
+                if (ftpClient != null) {
+                    ftpClient.backup(new OnEZFtpCallBack<String>() {
+                        @Override
+                        public void onSuccess(String response) {
+                            updateOutputMsg("Backup success!");
+                            updateCurDirPathView(response);
+                            requestFtpFileList();
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            updateOutputMsg("Backup fail,Err:" + msg);
+                        }
+                    });
+                }
+                break;
+            case R.id.btn_upload_file:
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_CHOOSE_FILE);
+                break;
+            default:
+                break;
+        }
     }
 
     private void updateCurDirPathView(String path) {
@@ -185,47 +239,11 @@ public class FtpClientActivity extends AppCompatActivity {
     }
 
     /**
-     * the layout item click event
-     */
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btn_connect:
-                    connectFtpServer();
-                    break;
-                case R.id.btn_disconnect:
-                    disconnectFtpServer();
-                    break;
-                case R.id.btn_backup:
-                    if (ftpClient != null) {
-                        ftpClient.backup(new OnEZFtpCallBack<String>() {
-                            @Override
-                            public void onSuccess(String response) {
-                                updateOutputMsg("Backup success!");
-                                updateCurDirPathView(response);
-                                requestFtpFileList();
-                            }
-
-                            @Override
-                            public void onFail(int code, String msg) {
-                                updateOutputMsg("Backup fail,Err:" + msg);
-                            }
-                        });
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    /**
      * List item click event
      */
     private FtpFilesAdapter.OnItemClickListener onItemClickListener = new FtpFilesAdapter.OnItemClickListener() {
         @Override
-        public void onClick(final EZFtpFile ftpFile) {
+        public void onItemClick(final EZFtpFile ftpFile) {
             //click item
             if (ftpFile.getType() == EZFtpFile.TYPE_DIRECTORY) {
                 //if type is dir changed remote path
@@ -250,8 +268,9 @@ public class FtpClientActivity extends AppCompatActivity {
                         updateOutputMsg("Changed ftp dir[" + targetPath + "] fail,Err:" + msg);
                     }
                 });
-            } else {
+            } else if (ftpFile.getType()==EZFtpFile.TYPE_FILE){
                 //file or link
+                //download if type is file.
                 String msg = getString((R.string.download_file_tips)) + "(" + ftpFile.getName() + ")";
                 new AlertDialog.Builder(FtpClientActivity.this)
                         .setMessage(msg)
@@ -271,6 +290,9 @@ public class FtpClientActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .create()
                         .show();
+            }else {
+                //link
+                //TODO SOMETHING
             }
         }
     };
@@ -283,6 +305,18 @@ public class FtpClientActivity extends AppCompatActivity {
                 @Override
                 public void onTransferSpeed(boolean isFinished, long startTime, long endTime, double speed, double averageSpeed) {
                     updateDownloadDialog(ftpFile, path, isFinished, startTime, endTime, speed, averageSpeed);
+                }
+            });
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void uploadFile(final File file) {
+        if (ftpClient != null) {
+            ftpClient.uploadFile(file.getAbsolutePath(), new EZFtpTransferSpeedCallback() {
+                @Override
+                public void onTransferSpeed(boolean isFinished, long startTime, long endTime, double speed, double averageSpeed) {
+                    Log.d(TAG, "onTransferSpeed: speed = "+speed+",isFinished = "+isFinished);
                 }
             });
         }

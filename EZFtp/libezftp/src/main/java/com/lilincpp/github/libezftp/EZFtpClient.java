@@ -71,13 +71,11 @@ public final class EZFtpClient implements IEZFtpClient {
         ftpClientIml.backup(callBack);
     }
 
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     @Override
     public void downloadFile(@NonNull EZFtpFile remoteFile, @NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
         ftpClientIml.downloadFile(remoteFile, localFilePath, callback);
     }
 
-    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     @Override
     public void uploadFile(@NonNull String localFilePath, @Nullable OnEZFtpDataTransferCallback callback) {
         ftpClientIml.uploadFile(localFilePath, callback);

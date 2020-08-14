@@ -136,6 +136,11 @@
             android:background="@drawable/shape_black_rectangle" />
 
         <Button
+            android:id="@+id/btn_upload_file"
+            style="@style/BtnStyle"
+            android:text="@string/connect_ftp_server" />
+
+        <Button
             android:id="@+id/btn_connect"
             style="@style/BtnStyle"
             android:text="@string/connect_ftp_server" />

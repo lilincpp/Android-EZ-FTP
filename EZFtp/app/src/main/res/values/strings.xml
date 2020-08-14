@@ -26,6 +26,8 @@
     <string name="stop_ftp_server">Stop FTP Server</string>
 
     <string name="download_file_tips">Do you want to download the file?</string>
+    <string name="choose_file_to_upload">Choose file to upload</string>
+
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="file">File</string>

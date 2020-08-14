@@ -33,7 +33,7 @@ public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHo
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void onClick(EZFtpFile ftpFile);
+        void onItemClick(EZFtpFile ftpFile);
     }
 
     public FtpFilesAdapter() {
@@ -88,7 +88,7 @@ public class FtpFilesAdapter extends RecyclerView.Adapter<FtpFilesAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
-                    onItemClickListener.onClick(ftpFile);
+                    onItemClickListener.onItemClick(ftpFile);
                 }
             }
         });

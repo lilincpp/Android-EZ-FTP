@@ -25,6 +25,7 @@
     <string name="stop_ftp_server">关闭FTP服务</string>
 
     <string name="download_file_tips">是否要下载该文件？</string>
+    <string name="choose_file_to_upload">选择文件上传</string>
     <string name="yes">是</string>
     <string name="no">否</string>
 
