@@ -1,6 +1,8 @@
 # Android-EZ-FTP
 FTP Server and Client for Android，Support downloading and uploading files
 
+# How to 
+
 # How to use it
 
 ## FTP Server
@@ -26,7 +28,7 @@ ftpServer.stop();
 
 ## FTP Client
 
-### Connect FTP Server
+### Connect to FTP Server
 
 ```java
 
