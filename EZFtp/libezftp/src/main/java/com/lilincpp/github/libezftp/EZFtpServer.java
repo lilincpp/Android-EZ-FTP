@@ -9,8 +9,8 @@ public final class EZFtpServer implements IEZFtpServer {
 
     private IEZFtpServer ftpServerImpl;
 
-    private EZFtpServer(List<EZFtpUser> users,int port) {
-        ftpServerImpl = new EZFtpServerImpl(users,port);
+    private EZFtpServer(List<EZFtpUser> users, int port) {
+        ftpServerImpl = new EZFtpServerImpl(users, port);
     }
 
     @Override
@@ -31,17 +31,19 @@ public final class EZFtpServer implements IEZFtpServer {
     public static final class Builder {
         private List<EZFtpUser> users = new ArrayList<>();
         private int port;
+
         public Builder addUser(EZFtpUser user) {
             users.add(user);
             return this;
         }
-        public Builder setListenPort(int port){
-            this.port=port;
+
+        public Builder setListenPort(int port) {
+            this.port = port;
             return this;
         }
 
         public EZFtpServer create() {
-            return new EZFtpServer(users,port);
+            return new EZFtpServer(users, port);
         }
     }
 }
