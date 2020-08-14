@@ -1,13 +1,13 @@
 # Android-EZ-FTP
-FTP Server and Client for Android，Support downloading and uploading files
 
-# How to 
+EZFTP Library supports you to develop an FTP server and client，it support download and upload file.
 
-# How to use it
+## Releases
+
 
 ## FTP Server
 
-### Start FTP Server
+### 1.Start FTP Server
 
 ```java
 //config
@@ -20,7 +20,7 @@ EZFtpServer ftpServer = new EZFtpServer.Builder()
 ftpServer.start();
 ```
 
-### Stop FTP Server
+### 2.Stop FTP Server
 
 ```java
 ftpServer.stop();
@@ -28,7 +28,7 @@ ftpServer.stop();
 
 ## FTP Client
 
-### Connect to FTP Server
+### 1.Connect to FTP Server
 
 ```java
 
@@ -63,7 +63,7 @@ ftpClient.connect(
 
 ```
 
-### Get remote file list
+### 2.Get remote file list
 ```java
 ftpClient.getCurDirFileList(new OnEZFtpCallBack<List<EZFtpFile>>() {
     @Override
@@ -80,7 +80,7 @@ ftpClient.getCurDirFileList(new OnEZFtpCallBack<List<EZFtpFile>>() {
 });
 ```
 
-### Download file from remote server
+### 3.Download file from remote server
 
 ```java
 final String saveLocalPath = SAVE_FILE_PATH + "/" + ftpFile.getName();
@@ -129,7 +129,7 @@ ftpClient.downloadFile(ftpFile, saveLocalPath, new OnEZFtpDataTransferCallback()
 });
 ```
 
-### Upload file to remote server
+### 4.Upload file to remote server
 ```java
 ftpClient.uploadFile(file.getAbsolutePath(), new EZFtpTransferSpeedCallback() {
     @Override
@@ -137,4 +137,24 @@ ftpClient.uploadFile(file.getAbsolutePath(), new EZFtpTransferSpeedCallback() {
        
     }
 });
+```
+
+## License
+
+EZ-FTP binaries and source code can be used according to the [Apache License, Version 2.0](https://github.com/lilincpp/Android-EZ-FTP/blob/master/LICENSE).
+
+```
+Copyright 2019 Square, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
