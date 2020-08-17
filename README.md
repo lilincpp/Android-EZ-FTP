@@ -144,7 +144,7 @@ ftpClient.uploadFile(file.getAbsolutePath(), new EZFtpTransferSpeedCallback() {
 EZ-FTP binaries and source code can be used according to the [Apache License, Version 2.0](https://github.com/lilincpp/Android-EZ-FTP/blob/master/LICENSE).
 
 ```
-Copyright 2019 Square, Inc.
+Copyright 2020 lilincpp
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
