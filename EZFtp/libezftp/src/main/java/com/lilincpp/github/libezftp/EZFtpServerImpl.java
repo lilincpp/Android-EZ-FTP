@@ -16,6 +16,9 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FTP server implement
+ */
 final class EZFtpServerImpl implements IEZFtpServer {
 
     private static final String TAG = "EZFtpServerImpl";
@@ -24,6 +27,12 @@ final class EZFtpServerImpl implements IEZFtpServer {
     private final Object lock = new Object();
     private boolean isInit = false;
 
+    /**
+     * create a ftp server
+     *
+     * @param users support user list(need login)
+     * @param port  ftp server listen port
+     */
     EZFtpServerImpl(List<EZFtpUser> users, int port) {
         //配置参数
         FtpServerFactory serverFactory = new FtpServerFactory();
@@ -51,6 +60,9 @@ final class EZFtpServerImpl implements IEZFtpServer {
         isInit = true;
     }
 
+    /**
+     * make sure server is init
+     */
     private void checkInit() {
         synchronized (lock) {
             if (!isInit) {
@@ -59,6 +71,9 @@ final class EZFtpServerImpl implements IEZFtpServer {
         }
     }
 
+    /**
+     * release ftp server
+     */
     private void release() {
         synchronized (lock) {
             if (ftpServer != null && !ftpServer.isStopped()) {
@@ -68,6 +83,9 @@ final class EZFtpServerImpl implements IEZFtpServer {
         }
     }
 
+    /**
+     * start ftp server
+     */
     @Override
     public void start() {
         checkInit();
@@ -78,12 +96,19 @@ final class EZFtpServerImpl implements IEZFtpServer {
         }
     }
 
+    /**
+     * stop ftp server
+     */
     @Override
     public void stop() {
         checkInit();
         ftpServer.stop();
     }
 
+    /**
+     * whether is stopped the ftp server
+     * @return true is stopped,false is not.
+     */
     @Override
     public boolean isStopped() {
         return ftpServer.isStopped();

@@ -1,7 +1,7 @@
 package com.lilincpp.github.libezftp.exceptions;
 
 /**
- * 未初始化，调用相关方法时会抛出该异常
+ * if client or server is not init,will throw this exception
  *
  * @author lilin
  */

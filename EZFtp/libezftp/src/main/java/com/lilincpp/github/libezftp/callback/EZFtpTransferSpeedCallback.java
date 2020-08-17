@@ -4,6 +4,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This callback support calculate speed base {@link OnEZFtpDataTransferCallback}
+ */
 public abstract class EZFtpTransferSpeedCallback implements OnEZFtpDataTransferCallback {
 
     private static final long CALC_TIME = 1000;
@@ -67,12 +70,14 @@ public abstract class EZFtpTransferSpeedCallback implements OnEZFtpDataTransferC
     }
 
     /**
-     * 每一秒回调一次
      *
-     * @param isFinished 是否已经完成
-     * @param startTime  文件开始传输时间
-     * @param endTime    文件结束传输时间
-     * @param speed      传输速度 KB/S
+     * callback transfer data speed
+     *
+     * @param isFinished   whether is finished the  task
+     * @param startTime the task start time
+     * @param endTime the task end time
+     * @param speed KB/S
+     * @param averageSpeed KB/S
      */
     public abstract void onTransferSpeed(boolean isFinished, long startTime, long endTime, double speed, double averageSpeed);
 

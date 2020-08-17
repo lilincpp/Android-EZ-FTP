@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * 远端文件信息
+ * FTP file
  */
 public final class EZFtpFile implements Parcelable {
 

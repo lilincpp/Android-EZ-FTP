@@ -5,6 +5,9 @@ import android.os.Looper;
 
 import com.lilincpp.github.libezftp.callback.OnEZFtpDataTransferCallback;
 
+/**
+ * transfer data wrapper,it changed thread to ui thread
+ */
 final class EZFtpTransferCallbackWrapper implements OnEZFtpDataTransferCallback {
 
     private OnEZFtpDataTransferCallback callback;
