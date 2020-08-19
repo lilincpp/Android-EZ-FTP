@@ -1,5 +1,8 @@
 package com.lilincpp.github.libezftp.user;
 
+/**
+ * FTP User entry
+ */
 public final class EZFtpUser {
     private String name;
     private String password;

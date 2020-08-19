@@ -1,5 +1,8 @@
 package com.lilincpp.github.libezftp.callback;
 
+/**
+ * callback when transfer data
+ */
 public interface OnEZFtpDataTransferCallback {
 
     int START = 1;

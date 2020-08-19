@@ -5,6 +5,11 @@ import android.os.Looper;
 
 import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
 
+/**
+ * callback wrapper{@link OnEZFtpCallBack},it will change current thread to ui thread.
+ *
+ * @param <E>
+ */
 final class EZFtpSampleCallbackWrapper<E> implements OnEZFtpCallBack<E> {
 
     private final Object lock = new Object();

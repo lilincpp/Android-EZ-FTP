@@ -27,7 +27,7 @@ import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 import it.sauronsoftware.ftp4j.FTPListParseException;
 
 /**
- * FTP客户端具体实现类
+ * implement {@link IEZFtpClient}
  *
  * @author lilin
  */

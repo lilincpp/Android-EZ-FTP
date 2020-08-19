@@ -1,10 +1,7 @@
 package com.lilincpp.github.libezftp;
 
-import android.Manifest;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
 
 import com.lilincpp.github.libezftp.callback.OnEZFtpCallBack;
 import com.lilincpp.github.libezftp.callback.OnEZFtpDataTransferCallback;
@@ -12,7 +9,7 @@ import com.lilincpp.github.libezftp.callback.OnEZFtpDataTransferCallback;
 import java.util.List;
 
 /**
- * 供外界使用的API
+ * Proxy for {@link EZFtpClientImpl}
  *
  * @author lilin
  */
