@@ -4,7 +4,7 @@ EZFTP Library supports you to develop an FTP server and client，it support down
 
 ## Releases
 
-Coming soon
+Coming soon.
 
 ## FTP Server
 
