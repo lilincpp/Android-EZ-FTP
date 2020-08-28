@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EZ-FTP</string>
+    <string name="app_name">EZ-FTP Demo</string>
     <string name="help_title">如何使用？</string>
     <string name="step1">1.作为服务端的设备，开启热点</string>
     <string name="step2">2.作为服务端的设备，启动FTP服务</string>

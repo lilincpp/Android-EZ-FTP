@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EZ-FTP</string>
+    <string name="app_name">EZ-FTP Demo</string>
     <string name="help_title">How to use it?</string>
     <string name="step1">1.As a server-side device, turn on the hotspot</string>
     <string name="step2">2.As a server-side device, start the FTP service</string>

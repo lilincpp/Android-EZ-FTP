@@ -54,38 +54,38 @@ final class EZFtpClientImpl implements IEZFtpClient {
     }
 
     /**
-     * 初始化工作线程
+     * init ftp client
      */
     private void init() {
         synchronized (lock) {
-            //初始化工作线程
+            //init work thread
             final HandlerThread temp = taskThread;
             if (!temp.isAlive()) {
                 temp.start();
                 taskHandler = new Handler(temp.getLooper());
             }
-            //初始化FTP客户端
+            //create ftp client object
             ftpClient = new FTPClient();
             isInit = true;
         }
     }
 
     /**
-     * 释放资源
+     * release ftp client.
      */
     @Override
     public void release() {
         synchronized (lock) {
-            //检查FTP客户端是否仍然连接
-            //如果仍然在连接的话，则先断开
+            //disconnect if it is currently connected
             if (ftpClient != null && isConnected()) {
                 disconnect();
             }
-            //释放工作线程
+            //release work thread
             final HandlerThread temp = taskThread;
             if (temp.isAlive()) {
                 temp.quit();
             }
+            //clear message queue
             if (taskHandler != null) {
                 taskHandler.removeCallbacksAndMessages(null);
             }
@@ -93,27 +93,34 @@ final class EZFtpClientImpl implements IEZFtpClient {
         }
     }
 
+    /**
+     * check init status
+     */
     private void checkInit() {
         if (!isInit) {
             throw new EZFtpNoInitException("EZFtpClient is not init or has been released！");
         }
     }
 
-    private String getBackUpPath() {
+    /**
+     * Get the upper level path
+     *
+     * @return the previous level path
+     */
+    private @Nullable
+    String getBackUpPath() {
         if (TextUtils.isEmpty(curDirPath)) {
             return null;
         }
 
-        //当是Home目录时，则不可以再放回上一级了
+        //if cur path is home dir,return
+        //Because it can't go back to the previous level
         if (TextUtils.equals(curDirPath, HOME_DIR)) {
             return HOME_DIR;
         }
 
-        //获取最后一个文件符斜杠的下标
+        //get last index
         final int lastIndex = curDirPath.lastIndexOf("/");
-        //substring不会包含最后一个字符，因此如果是[/lilin]，返回的是"/"
-        //substring不会包含最后一个字符，因此如果是[/lilin/cpp]，返回的是"/lilin"
-        //lastIndex为0时，表示是在二级目录
         if (lastIndex == 0) {
             return HOME_DIR;
         }
