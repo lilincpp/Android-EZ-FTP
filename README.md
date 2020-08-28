@@ -19,7 +19,7 @@ Coming soon.
 ### As a FTP Client
 <img width="360" height="640" src="https://github.com/lilincpp/Android-EZ-FTP/blob/master/img/ftp_client.png" />
 
-### Browser Connect FTP Server
+### Connect to FTP server via browser
 
 <img width="638.5" height="378" src="https://github.com/lilincpp/Android-EZ-FTP/blob/master/img/browser_login.png" />
 
