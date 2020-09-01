@@ -25,7 +25,7 @@ Coming soon.
 
 <img width="638.5" height="378" src="https://github.com/lilincpp/Android-EZ-FTP/blob/master/img/browser_files.png" />
 
-
+## Sample Code
 ## FTP Server
 
 ### 1.Start FTP Server
