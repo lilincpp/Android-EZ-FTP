@@ -2,6 +2,28 @@
 
 EZFTP Library supports you to develop an FTP server and client，it support download and upload file.And also supports browser connection to FTP Server.
 
+## Menu
+
+- [Android-EZ-FTP](#android-ez-ftp)
+  * [Releases](#releases)
+  * [Show](#show)
+    + [App Demo](#app-demo)
+        + [Main](#main)
+        + [As a FTP Server](#as-a-ftp-server)
+        + [As a FTP Client](#as-a-ftp-client)
+    + [Browser](#browser)
+        + [Connect to FTP server via browser](#connect-to-ftp-server-via-browser)
+  * [Sample Code](#sample-code)
+    * [FTP Server](#ftp-server)
+        + [1.Start FTP Server](#1start-ftp-server)
+        + [2.Stop FTP Server](#2stop-ftp-server)
+    * [FTP Client](#ftp-client)
+        + [1.Connect to FTP Server](#1connect-to-ftp-server)
+        + [2.Get remote file list](#2get-remote-file-list)
+        + [3.Download file from remote server](#3download-file-from-remote-server)
+        + [4.Upload file to remote server](#4upload-file-to-remote-server)
+  * [License](#license)
+
 ## Releases
 
 Coming soon.
@@ -19,6 +41,7 @@ Coming soon.
 ### As a FTP Client
 <img width="360" height="640" src="https://github.com/lilincpp/Android-EZ-FTP/blob/master/img/ftp_client.png" />
 
+### Browser
 ### Connect to FTP server via browser
 
 <img width="638.5" height="378" src="https://github.com/lilincpp/Android-EZ-FTP/blob/master/img/browser_login.png" />
