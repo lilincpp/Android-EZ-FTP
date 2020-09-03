@@ -2,7 +2,7 @@
 
 EZFTP Library supports you to develop an FTP server and client，it support download and upload file.And also supports browser connection to FTP Server.
 
-## Menu
+## Index
 
 - [Android-EZ-FTP](#android-ez-ftp)
   * [Releases](#releases)
